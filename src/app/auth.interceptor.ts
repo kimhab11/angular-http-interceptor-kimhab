@@ -15,7 +15,15 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor() {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    console.log(request)
-    return next.handle(request);
+    // change header
+    const clone = request.clone({
+      setHeaders:{
+        Authorization: 'ABC auth',
+        method: 'POST'
+      }
+    })
+    console.log(clone)
+    return next.handle(clone);
   }
 }
+

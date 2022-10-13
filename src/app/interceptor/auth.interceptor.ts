@@ -3,9 +3,9 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
+  HttpInterceptor, HttpErrorResponse
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {catchError, Observable, retry} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +23,13 @@ export class AuthInterceptor implements HttpInterceptor {
       }
     })
     console.log(clone)
-    return next.handle(clone);
+    return next.handle(clone).pipe(
+      retry(0),
+      catchError((error: HttpErrorResponse) => {
+        console.log(error)
+        throw error;
+      })
+    );
   }
 }
 
